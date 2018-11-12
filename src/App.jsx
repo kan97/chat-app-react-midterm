@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
-import SignIn from './components/auth/SignIn'
-import SignUp from './components/auth/SignUp'
-import PeopleList from './containers/dashboard/PeopleList'
+import { showContentMenus } from './routes/routes'
 
 class App extends Component {
   render() {
@@ -11,12 +9,7 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <Navbar />
-          <Switch>
-            <Route exact path='/' component={PeopleList} />
-            <Route path='/signin' component={SignIn} />
-            <Route path='/signup' component={SignUp} />
-            <Route path='/message/:cfid' component={PeopleList} />
-          </Switch>
+          { showContentMenus() }
         </div>
       </BrowserRouter>
     );

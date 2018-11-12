@@ -13,8 +13,8 @@ import fbConfig from './config/fbConfig'
 
 const rrfConfig = {
     useFirestoreForProfile: true,
-    userProfile: 'user',
-    attachAuthIsReady: true
+    attachAuthIsReady: true,
+    userProfile: "users", // firebase root where user profiles are stored
 }
 
 const store = createStore(rootReducer, 

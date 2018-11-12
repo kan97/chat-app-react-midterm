@@ -1,5 +1,4 @@
 import * as Types from '../constants/actionTypes'
-import { presence } from '../../utils/actions'
 
 export const signIn = credentials => {
     return (dispatch, getState, { getFirebase }) => {
@@ -9,7 +8,6 @@ export const signIn = credentials => {
             credentials.email,
             credentials.password
         ).then(() => {
-            presence(firebase)
             dispatch({ type: Types.SIGNIN_SUCCESS })
         }).catch(err => {
             dispatch({ type: Types.SIGNIN_ERROR, err })
@@ -40,7 +38,6 @@ export const signInWithGoogle = () => {
                 }
             })
         }).then(() => {
-            presence(firebase)
             dispatch({ type: Types.SIGNIN_WITH_GOOGLE_SUCCESS })
         })
     }
@@ -77,7 +74,6 @@ export const signUp = newUser => {
                 picture: null
             })
         }).then(() => {
-            presence(firebase)
             dispatch({ type: Types.SIGNUP_SUCCESS })
         }).catch(err => {
             dispatch({ type: Types.SIGNUP_ERROR, err })
