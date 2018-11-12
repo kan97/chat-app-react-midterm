@@ -13,17 +13,21 @@ import SidenavPre from "../../components/layout/Sidenav";
 const Dashboard = props => {
   const { auth, users, status } = props;
   if (!auth.uid) return <Redirect to="/signin" />;
-console.log(props);
-
   return (
     <Fragment>
-      { !isEmpty(users) && isLoaded(users) &&
-      !isEmpty(status) && isLoaded(status) &&
-    <div className="container clearfix">
-      <SidenavPre uid={auth.uid} users={users} status={status}/>
-      <Chat cfid={props.match.params.cfid} uid={auth.uid} />
-    </div>
-      }
+      {!isEmpty(users) &&
+        isLoaded(users) &&
+        !isEmpty(status) &&
+        isLoaded(status) && (
+          <div className="row container clearfix">
+            <div className="col s3">
+              <SidenavPre uid={auth.uid} users={users} status={status} />
+            </div>
+            <div className="col s9">
+              <Chat cfid={props.match.params.cfid} uid={auth.uid} />
+            </div>
+          </div>
+        )}
     </Fragment>
   );
 };
@@ -39,5 +43,5 @@ const mapStateToProps = state => {
 export default compose(
   withRouter,
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "users"},{ collection: "status" }])
+  firestoreConnect([{ collection: "users" }, { collection: "status" }])
 )(Dashboard);

@@ -29,6 +29,7 @@ const MessageBox = ({
         <div className="chat-about">
           <div className="chat-with">Chat with {chatFriendName}</div>
         </div>
+        <i className="fa fa-star" />
       </div>
       <div className="chat-history">
         <ul>
@@ -55,6 +56,7 @@ const MessageBox = ({
           placeholder="Type your message"
           rows="3"
         />
+        <i className="fa fa-file-image" />
         <button>Send</button>
       </form>
     </div>
