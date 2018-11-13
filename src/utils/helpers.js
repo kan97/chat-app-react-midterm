@@ -101,3 +101,26 @@ export const sortByStar = (star, users, status) => {
     status: statusResult.length !== 0 ? statusResult : status
   };
 }
+
+export const searchByName = (value, users, status) => {
+  if (value.trim() === "") {
+    return {
+      users: users,
+      status: status
+    };
+  }
+  let usersResult = []
+  let statusResult = [];
+  users.map((user, index) => {
+    const fullname = `${user.firstName} ${user.lastName}`
+    if (fullname.toLowerCase().includes(value.toLowerCase().trim())) {
+      usersResult.push(user)
+      statusResult.push(status[index])
+    }
+    return null
+  })
+  return {
+    users: usersResult,
+    status: statusResult
+  };
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
@@ -6,28 +6,50 @@ import SidenavPre from "../../components/layout/Sidenav";
 import {
   sortByAlphabet,
   sortByLastestChat,
-  sortByStar
+  sortByStar,
+  searchByName
 } from "../../utils/helpers";
 
-const Sidenav = props => {
-  if (!isLoaded(props.star) || !isLoaded(props.conversation)) {
-    return null;
+class Sidenav extends Component {
+  state = {
+    search: ""
+  };
+
+  myCallback = value => {
+    this.setState({ search: value });
+  };
+
+  render() {
+    if (!isLoaded(this.props.star) || !isLoaded(this.props.conversation)) {
+      return null;
+    }
+    let alphabet = [...this.props.users];
+    alphabet.sort(sortByAlphabet);
+    const lastestChat = sortByLastestChat(
+      this.props.uid,
+      [...this.props.conversation],
+      [...alphabet],
+      [...this.props.status]
+    );
+    const star = sortByStar(
+      [...this.props.star],
+      [...lastestChat.users],
+      [...lastestChat.status]
+    );
+    const search = searchByName(
+      this.state.search,
+      [...star.users],
+      [...star.status]
+    );
+    return (
+      <SidenavPre
+        users={search.users}
+        status={search.status}
+        callbackFromParent={this.myCallback}
+      />
+    );
   }
-  let alphabet = [...props.users];
-  alphabet.sort(sortByAlphabet);
-  const lastestChat = sortByLastestChat(
-    props.uid,
-    [...props.conversation],
-    [...alphabet],
-    [...props.status]
-  );
-  const star = sortByStar(
-    [...props.star],
-    [...lastestChat.users],
-    [...lastestChat.status]
-  );
-  return <SidenavPre users={star.users} status={star.status} />;
-};
+}
 
 const enhance = compose(
   firestoreConnect(props => {
