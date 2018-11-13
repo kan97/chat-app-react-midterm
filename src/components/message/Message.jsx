@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-const Message = ({ owner, createdAt, name, text }) => {
+const Message = ({ owner, createdAt, name, text, isImage }) => {
   return (
     <Fragment>
       {owner ? (
@@ -11,6 +11,9 @@ const Message = ({ owner, createdAt, name, text }) => {
             <i className="fa fa-circle me" />
           </div>
           <div className="message other-message float-right">{text}</div>
+          {isImage && (
+            <img className="float-right" src={text} alt={text} width="90%" />
+          )}
         </li>
       ) : (
         <li>
@@ -22,6 +25,7 @@ const Message = ({ owner, createdAt, name, text }) => {
             <span className="message-data-time">{createdAt}</span>
           </div>
           <div className="message my-message">{text}</div>
+          {isImage && <img src={text} alt={text} width="90%" />}
         </li>
       )}
     </Fragment>

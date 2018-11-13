@@ -12,7 +12,7 @@ import {
 import { getFirestore } from "redux-firestore";
 
 import { presence } from "../../utils/actions";
-import { conversationParam } from "../../utils/helpers";
+import { conversationParam, validateImageURL } from "../../utils/helpers";
 
 import MessageBox from "../../components/message/MessageBox";
 
@@ -22,30 +22,37 @@ class Chat extends Component {
   }
 
   myCallback = value => {
-    if (!this.props.uid || !this.props.cfid) {
+    if (!this.props.uid || !this.props.cfid || value.trim() === "") {
       return;
     }
-    let param = conversationParam(this.props.uid, this.props.cfid);
-    getFirebase()
-      .database()
-      .ref(`messages/${param}`)
-      .push({
-        text: value,
-        createdAt: getFirebase().database.ServerValue.TIMESTAMP,
-        uid: this.props.uid
-      })
-      .then(() => {
-        getFirestore()
-          .doc(`conversation/${this.props.uid}/list/${this.props.cfid}`)
-          .set({
-            createdAt: getFirestore().FieldValue.serverTimestamp()
-          });
-        getFirestore()
-          .doc(`conversation/${this.props.cfid}/list/${this.props.uid}`)
-          .set({
-            createdAt: getFirestore().FieldValue.serverTimestamp()
-          });
-      });
+    validateImageURL(value).then(res => {
+      let isImage = false;
+      if (res) {
+        isImage = true;
+      }
+      let param = conversationParam(this.props.uid, this.props.cfid);
+      getFirebase()
+        .database()
+        .ref(`messages/${param}`)
+        .push({
+          text: value,
+          isImage: isImage,
+          createdAt: getFirebase().database.ServerValue.TIMESTAMP,
+          uid: this.props.uid
+        })
+        .then(() => {
+          getFirestore()
+            .doc(`conversation/${this.props.uid}/list/${this.props.cfid}`)
+            .set({
+              createdAt: getFirestore().FieldValue.serverTimestamp()
+            });
+          getFirestore()
+            .doc(`conversation/${this.props.cfid}/list/${this.props.uid}`)
+            .set({
+              createdAt: getFirestore().FieldValue.serverTimestamp()
+            });
+        });
+    });
   };
 
   myCallback2 = () => {
@@ -53,7 +60,7 @@ class Chat extends Component {
       .doc(`star/${this.props.uid}/list/${this.props.cfid}`)
       .set({
         createdAt: getFirestore().FieldValue.serverTimestamp()
-      })
+      });
   };
 
   render() {

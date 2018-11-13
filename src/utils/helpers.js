@@ -68,8 +68,12 @@ export const sortByStar = (star, users, status) => {
   let tempUsers = [...users];
   if (star) {
     star.forEach(element => {
-      const isUndefined = status.length !== 0 && status.find(item => item === undefined)
-      const data = isUndefined ? status.find(item => item.id === element.id) : null;
+      const data = status.find(item => {
+        if (item === undefined) {
+          return null
+        }
+        return item.id === element.id
+      });
       if (data) {
         if (data.state === 'online') {
           result.push(data)
@@ -123,4 +127,29 @@ export const searchByName = (value, users, status) => {
     users: usersResult,
     status: statusResult
   };
+}
+
+function imageExists(url, callback) {
+  var img = new Image();
+  img.onload = function() {
+    callback(true);
+  };
+  img.onerror = function() {
+    callback(false);
+  };
+  img.src = url;
+}
+
+export function validateImageURL(imageUrl) {
+  return new Promise(
+    (resolve, reject) => {
+      imageExists(imageUrl, function(exists) {
+        if (exists === true) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
+    }
+  )
 }

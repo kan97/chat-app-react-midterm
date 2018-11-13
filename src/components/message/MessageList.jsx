@@ -20,6 +20,7 @@ const MessageList = ({ uid, userName, chatFriendName, messageList }) => {
               createdAt={createdAt}
               name={name}
               text={message.value.text}
+              isImage={message.value.isImage}
             />
           );
         })}
