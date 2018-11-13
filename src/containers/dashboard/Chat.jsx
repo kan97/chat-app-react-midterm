@@ -17,15 +17,14 @@ import { conversationParam } from "../../utils/helpers";
 import MessageBox from "../../components/message/MessageBox";
 
 class Chat extends Component {
-  state = {
-    star: { color: "#D8DADF" }
-  };
-
   componentDidMount() {
     presence(getFirebase());
   }
 
   myCallback = value => {
+    if (!this.props.uid || !this.props.cfid) {
+      return;
+    }
     let param = conversationParam(this.props.uid, this.props.cfid);
     getFirebase()
       .database()
@@ -55,9 +54,6 @@ class Chat extends Component {
       .set({
         createdAt: getFirestore().FieldValue.serverTimestamp()
       })
-      .then(() => {
-        this.setState({ star: { color: "#f1e05a" } });
-      });
   };
 
   render() {
@@ -66,14 +62,15 @@ class Chat extends Component {
         {!isEmpty(this.props.user) &&
           !isEmpty(this.props.chatFriend) &&
           isLoaded(this.props.user) &&
-          isLoaded(this.props.chatFriend) && (
+          isLoaded(this.props.chatFriend) &&
+          isLoaded(this.props.star) && (
             <MessageBox
               uid={this.props.uid}
               user={this.props.user[0]}
               chatFriend={this.props.chatFriend[0]}
               messageList={this.props.messageList}
               callbackFromParent={this.myCallback}
-              star={this.state.star}
+              star={this.props.star.length !== 0}
               callbackFromParent2={this.myCallback2}
             />
           )}
@@ -86,7 +83,13 @@ const enhance = compose(
   firestoreConnect(props => {
     return [
       { collection: "users", doc: props.uid, storeAs: "user" },
-      { collection: "users", doc: props.cfid, storeAs: "chatFriend" }
+      { collection: "users", doc: props.cfid, storeAs: "chatFriend" },
+      {
+        collection: "star",
+        doc: props.uid,
+        subcollections: [{ collection: "list", doc: props.cfid }],
+        storeAs: "star"
+      }
     ];
   }),
   firebaseConnect(props => {
@@ -98,7 +101,8 @@ const enhance = compose(
       `ordered/messages/${conversationParam(props.uid, props.cfid)}`
     ),
     user: firestore.ordered["user"],
-    chatFriend: firestore.ordered["chatFriend"]
+    chatFriend: firestore.ordered["chatFriend"],
+    star: firestore.ordered["star"]
   }))
 );
 

@@ -3,21 +3,30 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { firestoreConnect, isLoaded } from "react-redux-firebase";
 import SidenavPre from "../../components/layout/Sidenav";
-import { sortByAlphabet, sortByLastestChat } from "../../utils/helpers";
+import {
+  sortByAlphabet,
+  sortByLastestChat,
+  sortByStar
+} from "../../utils/helpers";
 
 const Sidenav = props => {
   if (!isLoaded(props.star) || !isLoaded(props.conversation)) {
     return null;
   }
-  let temp = [...props.users];
-  temp.sort(sortByAlphabet);
-  const data = sortByLastestChat(
+  let alphabet = [...props.users];
+  alphabet.sort(sortByAlphabet);
+  const lastestChat = sortByLastestChat(
     props.uid,
     [...props.conversation],
-    [...temp],
+    [...alphabet],
     [...props.status]
   );
-  return <SidenavPre users={data.users} status={data.status} />;
+  const star = sortByStar(
+    [...props.star],
+    [...lastestChat.users],
+    [...lastestChat.status]
+  );
+  return <SidenavPre users={star.users} status={star.status} />;
 };
 
 const enhance = compose(

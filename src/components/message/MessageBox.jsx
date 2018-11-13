@@ -10,6 +10,8 @@ const MessageBox = ({
   star,
   callbackFromParent2
 }) => {
+  console.log(star);
+
   const userName = `${user.firstName} ${user.lastName}`;
   const chatFriendName = `${chatFriend.firstName} ${chatFriend.lastName}`;
   let input;
@@ -36,7 +38,7 @@ const MessageBox = ({
           onClick={() => {
             callbackFromParent2();
           }}
-          style={star}
+          style={star ? { color: "#f1e05a" } : { color: "#D8DADF" }}
         />
       </div>
       <div className="chat-history">

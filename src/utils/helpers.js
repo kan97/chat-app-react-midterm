@@ -24,10 +24,10 @@ export const sortByAlphabet = (a, b) => {
 export const sortByLastestChat = (uid, conversation, users, status) => {
   let usersResult = [];
   let statusResult = [];
-  const tempUsers = [...users];
+  let tempUsers = [...users];
   if (conversation) {
     users.map((user, index) => {
-      var data = conversation.find(item => item.id === user.id);
+      const data = conversation.find(item => item.id === user.id);
       if (data || uid === user.id) {
         tempUsers.splice(index, 1, null);
       }
@@ -60,3 +60,44 @@ export const sortByLastestChat = (uid, conversation, users, status) => {
     status: statusResult
   };
 };
+
+export const sortByStar = (star, users, status) => {
+  let result = []
+  let usersResult = []
+  let statusResult = [];
+  let tempUsers = [...users];
+  if (star) {
+    star.forEach(element => {
+      const isUndefined = status.length !== 0 && status.find(item => item === undefined)
+      const data = isUndefined ? status.find(item => item.id === element.id) : null;
+      if (data) {
+        if (data.state === 'online') {
+          result.push(data)
+        }
+      }
+    })
+  }
+  if (result.length !== 0) {
+    users.map((user, index) => {
+      const data = result.find(item => item.id === user.id);
+      if (data) {
+        usersResult.push(user)
+        tempUsers.splice(index, 1, null);
+        statusResult.push(status[index])
+      }
+      return null
+    });
+    tempUsers.map((user, index) => {
+      if (user) {
+        usersResult.push(user)
+        tempUsers.splice(index, 1, null);
+        statusResult.push(status[index])
+      }
+      return null
+    });
+  }
+  return {
+    users: usersResult.length !== 0 ? usersResult : users,
+    status: statusResult.length !== 0 ? statusResult : status
+  };
+}
