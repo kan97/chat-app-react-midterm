@@ -17,6 +17,10 @@ import { conversationParam } from "../../utils/helpers";
 import MessageBox from "../../components/message/MessageBox";
 
 class Chat extends Component {
+  state = {
+    star: { color: "#D8DADF" }
+  };
+
   componentDidMount() {
     presence(getFirebase());
   }
@@ -33,10 +37,26 @@ class Chat extends Component {
       })
       .then(() => {
         getFirestore()
-          .doc(`conversation/${param}`)
+          .doc(`conversation/${this.props.uid}/list/${this.props.cfid}`)
           .set({
             createdAt: getFirestore().FieldValue.serverTimestamp()
           });
+        getFirestore()
+          .doc(`conversation/${this.props.cfid}/list/${this.props.uid}`)
+          .set({
+            createdAt: getFirestore().FieldValue.serverTimestamp()
+          });
+      });
+  };
+
+  myCallback2 = () => {
+    getFirestore()
+      .doc(`star/${this.props.uid}/list/${this.props.cfid}`)
+      .set({
+        createdAt: getFirestore().FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        this.setState({ star: { color: "#f1e05a" } });
       });
   };
 
@@ -53,6 +73,8 @@ class Chat extends Component {
               chatFriend={this.props.chatFriend[0]}
               messageList={this.props.messageList}
               callbackFromParent={this.myCallback}
+              star={this.state.star}
+              callbackFromParent2={this.myCallback2}
             />
           )}
       </Fragment>
@@ -64,12 +86,7 @@ const enhance = compose(
   firestoreConnect(props => {
     return [
       { collection: "users", doc: props.uid, storeAs: "user" },
-      { collection: "users", doc: props.cfid, storeAs: "chatFriend" },
-      // {
-      //   collection: "conversation",
-      //   doc: conversationParam(props.uid, props.cfid),
-      //   storeAs: "conversation"
-      // }
+      { collection: "users", doc: props.cfid, storeAs: "chatFriend" }
     ];
   }),
   firebaseConnect(props => {
@@ -81,8 +98,7 @@ const enhance = compose(
       `ordered/messages/${conversationParam(props.uid, props.cfid)}`
     ),
     user: firestore.ordered["user"],
-    chatFriend: firestore.ordered["chatFriend"],
-    // conversation: firestore.ordered["conversation"]
+    chatFriend: firestore.ordered["chatFriend"]
   }))
 );
 

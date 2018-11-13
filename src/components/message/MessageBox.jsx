@@ -6,7 +6,9 @@ const MessageBox = ({
   user,
   chatFriend,
   messageList,
-  callbackFromParent
+  callbackFromParent,
+  star,
+  callbackFromParent2
 }) => {
   const userName = `${user.firstName} ${user.lastName}`;
   const chatFriendName = `${chatFriend.firstName} ${chatFriend.lastName}`;
@@ -29,7 +31,13 @@ const MessageBox = ({
         <div className="chat-about">
           <div className="chat-with">Chat with {chatFriendName}</div>
         </div>
-        <i className="fa fa-star" />
+        <i
+          className="fa fa-star"
+          onClick={() => {
+            callbackFromParent2();
+          }}
+          style={star}
+        />
       </div>
       <div className="chat-history">
         <ul>

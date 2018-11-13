@@ -8,7 +8,7 @@ import { firestoreConnect, isEmpty, isLoaded } from "react-redux-firebase";
 import "../../stylesheets/Dashboard.css";
 
 import Chat from "./Chat";
-import SidenavPre from "../../components/layout/Sidenav";
+import Sidenav from "./Sidenav";
 
 const Dashboard = props => {
   const { auth, users, status } = props;
@@ -21,7 +21,7 @@ const Dashboard = props => {
         isLoaded(status) && (
           <div className="row container clearfix">
             <div className="col s3">
-              <SidenavPre uid={auth.uid} users={users} status={status} />
+              <Sidenav uid={auth.uid} users={users} status={status} />
             </div>
             <div className="col s9">
               <Chat cfid={props.match.params.cfid} uid={auth.uid} />
